@@ -126,6 +126,17 @@ describe(Support.getTestDialectTeaser("DAOFactory"), function () {
       });
     });
 
+    it("should have no problems with strings containing escaped unicode characters", function () {
+      var self = this;
+      return this.ScopeMe.create({username: '\u0000 I break everything \u0001', email: 'encoding@unico.de'}).then(function(){
+        return self.ScopeMe.scope('escape').all().then(function(users){
+          expect(users).to.be.an.instanceof(Array);
+          expect(users.length).to.equal(1);
+          expect(users[0].username).to.equal('\u0000 I break everything \u0001');
+        });
+      });
+    });
+
     it("should be able to use a defaultScope if declared", function() {
       return this.ScopeMe.all().then(function(users) {
         expect(users).to.be.an.instanceof(Array);
